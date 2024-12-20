@@ -20,9 +20,21 @@ def project_points(points_3d: np.ndarray,
     """
 
     # [TODO] get image coordinates
+    ## Normalized Coords
+    x = points_3d[:, 0] / points_3d[:, 2]
+    y = points_3d[:, 1] / points_3d[:, 2]
 
+    ## Intrinsic
+    fx, fy = K[0, 0], K[1, 1]
+    cx, cy = K[0, 2], K[1, 2]
+    
+    x_proj = fx * x + cx
+    y_proj = fy * y + cy
+
+    ## Stack coords
+    projected_points = np.vstack([x_proj, y_proj]).T # 2, N
 
     # [TODO] apply distortion
-
+    projected_points = distort_points(projected_points, D, K)
 
     return projected_points
